@@ -5,7 +5,12 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
-class Ticket {
+//define this abstract so all .toStringDelimited() calls work with single signature
+abstract class TicketObject {
+    abstract String toStringDelimited();
+}
+
+class Ticket extends TicketObject{
 
     static final char DELIM = ';';
     //weirdly, | doesn't work and splits strings into chars
@@ -85,6 +90,7 @@ class Ticket {
                 " Reported by: " + this.reporter + " Reported on: " + this.dateReported);
     }
 
+    @Override
     String toStringDelimited(){
         return Integer.toString(this.ticketID) +
                 DELIM + this.description +
@@ -113,6 +119,7 @@ class ResolvedTicket extends Ticket {
                 this.resolution + " Date resolved: " + this.dateResolved);
     }
 
+    @Override
     String toStringDelimited(){
         return Integer.toString(this.ticketID) +
                 DELIM + this.description +

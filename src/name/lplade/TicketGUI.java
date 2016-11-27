@@ -4,13 +4,16 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.ListIterator;
+import java.util.Vector;
 
 public class TicketGUI extends JFrame {
-
-    //TODO store Tickets as Vector instead of mapping the LinkedList
 
     private JPanel rootPanel;
     private JTextField newDescriptionTextField;
@@ -20,9 +23,30 @@ public class TicketGUI extends JFrame {
     private JButton closeSelectedTicketButton;
     private JButton addNewTicketButton;
 
+    Vector<Ticket> ticketQueue;
+    Vector<ResolvedTicket> resolvedList;
+
     private DefaultTableModel tableModel;
 
-    TicketGUI(LinkedList<Ticket> importedTickets, LinkedList<ResolvedTicket> resolvedList) {
+    TicketGUI() throws IOException {
+
+        //set up date formatter
+        DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+        Date todaysDate = new Date();
+
+        //set up file reading
+        String filename = "open_tickets.txt";
+        File f = new File(filename);
+        String filename2 = "Resolved_tickets_as_of_" + dateFormat.format(todaysDate) + ".txt";
+
+        //import saved data if possible
+        if (f.isFile()){
+            ticketQueue = FileIO.readTickets(filename);
+        } else {
+            System.out.println("No file found. Starting new issue tracker.");
+            ticketQueue = new Vector<>();
+        }
+
         setContentPane(rootPanel);
         setPreferredSize(new Dimension(500, 500));
 
