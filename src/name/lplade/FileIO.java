@@ -45,9 +45,6 @@ public class FileIO  {
 
                 //then read the next line
                 line = bufferedReader.readLine();
-
-
-
             }
 
             bufferedReader.close(); //close the file when done

@@ -18,17 +18,20 @@ public class TicketGUI extends JFrame {
     private JPanel rootPanel;
     private JTextField newDescriptionTextField;
     private JTextField newReporterTextField;
-    private JComboBox newPriorityComboBox;
+    private JComboBox<Integer> newPriorityComboBox;
     private JTable ticketsTable;
     private JButton closeSelectedTicketButton;
     private JButton addNewTicketButton;
+    private JTextField newResolutionTextField;
 
     Vector<Ticket> ticketQueue;
     Vector<ResolvedTicket> resolvedList;
 
-    private DefaultTableModel tableModel;
+    private TicketTableModel tableModel;
 
     TicketGUI() throws IOException {
+
+        super("Support Tickets");
 
         //set up date formatter
         DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
@@ -46,19 +49,22 @@ public class TicketGUI extends JFrame {
             System.out.println("No file found. Starting new issue tracker.");
             ticketQueue = new Vector<>();
         }
+        //initialize the archive collection
+        resolvedList = new Vector<>();
 
         setContentPane(rootPanel);
         setPreferredSize(new Dimension(500, 500));
 
-        this.tableModel = new DefaultTableModel();
+        tableModel = new TicketTableModel(ticketQueue); //provide Vector of tickets
 
-        setupTableModel(importedTickets);
 
-        this.ticketsTable.setModel(tableModel);
+        //setupTableModel(importedTickets);
+
+        ticketsTable.setModel(tableModel);
 
         setupComboBox();
 
-        addListeners(importedTickets, resolvedList);
+        addListeners();
 
         pack();
 
@@ -68,12 +74,18 @@ public class TicketGUI extends JFrame {
         //http://stackoverflow.com/questions/13800621/call-a-method-when-application-closes
         //setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
+        WindowListener windowListener = new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                super.windowClosing(e);
+            }
+        };
 
         setVisible(true);
 
     }
 
-    private void setupTableModel(LinkedList<Ticket> importedTickets) {
+/*    private void setupTableModel(LinkedList<Ticket> importedTickets) {
         //https://gilbertadjin.wordpress.com/2009/05/05/populating-a-jtable-with-a-collection-list/
 
         //Add column headings
@@ -110,7 +122,7 @@ public class TicketGUI extends JFrame {
 
         //add the array to the model
         tableModel.addRow(tableRow);
-    }
+    }*/
 
 
     private void setupComboBox() {
@@ -118,12 +130,12 @@ public class TicketGUI extends JFrame {
         for (int r = 1; r <= 5; r++) newPriorityComboBox.addItem(r);
     }
 
-    private void addListeners(LinkedList<Ticket> importedTickets, LinkedList<ResolvedTicket> resolvedList) {
+    private void addListeners() {
         //listen for clicked buttons
 
         //When we click the "Mark selected ticket as resolved" button...
         //http://stackoverflow.com/questions/23465295/remove-a-selected-row-from-jtable-on-button-click
-        closeSelectedTicketButton.addActionListener(new ActionListener() {
+        /*closeSelectedTicketButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int selectedRow = ticketsTable.getSelectedRow();
@@ -166,7 +178,7 @@ public class TicketGUI extends JFrame {
                 //TODO remove ticket from tableModel
                 //TODO generate a ResolvedTicket
             }
-        });
+        });*/
 
         //When we click the "Add new ticket" button...
         addNewTicketButton.addActionListener(new ActionListener() {
@@ -177,23 +189,46 @@ public class TicketGUI extends JFrame {
                 //newReporterTextField
                 String reporter = newReporterTextField.getText();
                 //newPriorityComboBox
-                int rating = (int)newPriorityComboBox.getSelectedItem();
+                int priority = (int)newPriorityComboBox.getSelectedItem();
+                Date dateReported = new Date(); //Default constructor creates date with current date/time
 
-                //TODO do something with these
+                //validate these
+                if (! testStringNotNull(description, "description")) return;
+                if (! testStringNotNull(reporter, "name of the person reporting")) return;
+                assert (priority >= 1 && priority <= 5);
+                //TODO more tests?
+
+                //if validation passes
+                Ticket newTicket = new Ticket(description, priority, reporter, dateReported);
+
+                //add the new ticket to the Vector
+                ticketQueue.addElement(newTicket);
+
+                //tell JTable to refresh
+                tableModel.fireTableDataChanged();
             }
         });
 
-        WindowListener windowListener = new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                super.windowClosing(e);
-            }
-        };
 
     }
 
 
+    //helper methods
 
+    private boolean testStringNotNull(String inString, String fieldName) {
+        // inString is the string to test
+        // fieldName is the word displayed to the user in the error
+        if ( inString == null || inString.length() == 0) {
+            String errMsg = "Please enter the " + fieldName + " for this issue";
+            JOptionPane.showMessageDialog(
+                    TicketGUI.this,
+                    "Please enter a description of the issue"
+            );
+            return false;
+        } else {
+            return true;
+        }
+    }
 
 }
 
