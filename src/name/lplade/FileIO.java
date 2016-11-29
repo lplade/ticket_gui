@@ -61,29 +61,7 @@ public class FileIO  {
         return ticketList;
 
     }
-/*  This does not work. :(
-    //Created a TicketObject abstract superclass so this works with both Tickets and ResolvedTickets
-    public static void storeTickets(Vector<TicketObject> ticketQueue, String filename) throws IOException {
-        //System.out.print("Writing tickets to " + filename + "... ");
 
-        try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(filename))) {
-
-            for (TicketObject t : ticketQueue ) {
-                //call the method that formats a ticket. remember to add a newline
-                String outString = t.toStringDelimited() + "\n";
-                //write the line
-                bufferedWriter.write(outString);
-            }
-
-            //close the writer when done
-            bufferedWriter.close();
-            System.out.println("Done!");
-        } catch (IOException e) {
-            System.out.println("Error writing to " + filename);
-            System.out.println(e.toString());
-            e.printStackTrace();
-        }
-    }*/
 
     static void storeTickets(Vector<Ticket> ticketQueue, String filename) throws IOException {
         //System.out.print("Writing tickets to " + filename + "... ");
