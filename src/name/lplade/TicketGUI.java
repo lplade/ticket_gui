@@ -92,7 +92,6 @@ public class TicketGUI extends JFrame {
         //listen for clicked buttons
 
         //When we click the "Mark selected ticket as resolved" button...
-        //http://stackoverflow.com/questions/23465295/remove-a-selected-row-from-jtable-on-button-click
         closeSelectedTicketButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -134,6 +133,9 @@ public class TicketGUI extends JFrame {
                 //remove the old ticket from the first vector
                 ticketQueue.removeElement(ticketToClose);
 
+                //reset the text field to null
+                newResolutionTextField.setText(null);
+
                 //tell JTable to refresh
                 tableModel.fireTableDataChanged();
 
@@ -163,6 +165,10 @@ public class TicketGUI extends JFrame {
 
                 //add the new ticket to the Vector
                 ticketQueue.addElement(newTicket);
+
+                //reset the fields to blank
+                newDescriptionTextField.setText(null);
+                newReporterTextField.setText(null);
 
                 //tell JTable to refresh
                 tableModel.fireTableDataChanged();
