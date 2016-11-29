@@ -1,7 +1,6 @@
 package name.lplade;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
@@ -9,8 +8,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.LinkedList;
-import java.util.ListIterator;
+
 import java.util.Vector;
 
 public class TicketGUI extends JFrame {
@@ -24,8 +22,8 @@ public class TicketGUI extends JFrame {
     private JButton addNewTicketButton;
     private JTextField newResolutionTextField;
 
-    Vector<Ticket> ticketQueue;
-    Vector<ResolvedTicket> resolvedList;
+    private Vector<Ticket> ticketQueue;
+    private Vector<ResolvedTicket> resolvedList;
 
     private String filename;
     private String filename2;

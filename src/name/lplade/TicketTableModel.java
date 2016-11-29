@@ -51,7 +51,7 @@ public class TicketTableModel extends AbstractTableModel {
         }
     }
 
-    public Ticket getTicketAtRow(int rowIndex){
+    Ticket getTicketAtRow(int rowIndex){
         return allTickets.get(rowIndex);
     }
 

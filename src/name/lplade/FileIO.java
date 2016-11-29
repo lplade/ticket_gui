@@ -4,7 +4,7 @@ import java.io.*;
 import java.util.Date;
 import java.util.Vector;
 
-public class FileIO  {
+class FileIO  {
 
 
     //read the tickets in from a file
@@ -87,6 +87,8 @@ public class FileIO  {
 
     static void storeResolvedTickets(Vector<ResolvedTicket> ticketQueue, String filename) throws IOException {
         System.out.print("Writing tickets to " + filename + "... ");
+
+        //TODO don't clobber existing file from today
 
         try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(filename))) {
 
