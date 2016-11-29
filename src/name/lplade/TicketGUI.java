@@ -107,6 +107,15 @@ public class TicketGUI extends JFrame {
                 //use current date as resolved date
                 Date resolvedDate = new Date();
 
+                //fail if no row selected
+                if (ticketsTable.getSelectedRow() == -1 ) {
+                    JOptionPane.showMessageDialog(
+                            TicketGUI.this,
+                            "Please select a ticket to close, first"
+                    );
+                    return;
+                }
+
                 //This SHOULD retrieve the ticket from the model corresponding to the selected row
                 Ticket ticketToClose = tableModel.getTicketAtRow(ticketsTable.getSelectedRow());
 
@@ -209,6 +218,8 @@ public class TicketGUI extends JFrame {
             return true;
         }
     }
+
+
 
 }
 
