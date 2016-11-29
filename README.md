@@ -1,4 +1,4 @@
-= Lab 9: More GUIs =
+# Lab 9: More GUIs #
 
 Support ticket GUI
 
