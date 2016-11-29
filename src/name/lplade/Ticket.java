@@ -56,7 +56,7 @@ class Ticket extends TicketObject{
         return DELIM;
     }
 
-    public static void setTicketIDCounter(int newCounter) {
+    static void setTicketIDCounter(int newCounter) {
         staticTicketIDCounter = newCounter;
     }
 

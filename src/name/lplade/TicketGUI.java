@@ -27,6 +27,9 @@ public class TicketGUI extends JFrame {
     Vector<Ticket> ticketQueue;
     Vector<ResolvedTicket> resolvedList;
 
+    private String filename;
+    private String filename2;
+
     private TicketTableModel tableModel;
 
 
@@ -40,9 +43,9 @@ public class TicketGUI extends JFrame {
         Date todaysDate = new Date();
 
         //set up file reading
-        String filename = "open_tickets.txt";
+        filename = "open_tickets.txt";
         File f = new File(filename);
-        String filename2 = "Resolved_tickets_as_of_" + dateFormat.format(todaysDate) + ".txt";
+        filename2 = "Resolved_tickets_as_of_" + dateFormat.format(todaysDate) + ".txt";
 
         //import saved data if possible
         if (f.isFile()){
@@ -55,7 +58,7 @@ public class TicketGUI extends JFrame {
         resolvedList = new Vector<>();
 
         setContentPane(rootPanel);
-        setPreferredSize(new Dimension(500, 500));
+        setPreferredSize(new Dimension(800, 500));
 
         tableModel = new TicketTableModel(ticketQueue); //provide Vector of tickets
 
@@ -75,17 +78,6 @@ public class TicketGUI extends JFrame {
         pack();
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-
-        // We need to save the files out before we exit
-        //http://stackoverflow.com/questions/13800621/call-a-method-when-application-closes
-        //setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-
-        WindowListener windowListener = new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                super.windowClosing(e);
-            }
-        };
 
         setVisible(true);
 
@@ -167,6 +159,33 @@ public class TicketGUI extends JFrame {
 
                 //tell JTable to refresh
                 tableModel.fireTableDataChanged();
+            }
+        });
+
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                if (JOptionPane.OK_OPTION == JOptionPane.showConfirmDialog(
+                        TicketGUI.this,
+                        "Are you sure you want to save and exit?",
+                        "Exit?",
+                        JOptionPane.OK_CANCEL_OPTION)) {
+                    //Save all of the data...
+                    try {
+                        FileIO.storeTickets(ticketQueue, filename);
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+                    try {
+                        FileIO.storeResolvedTickets(resolvedList, filename2);
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+
+                    //And quit.
+                    System.exit(0);
+                }
+                //super.windowClosing(e);
             }
         });
 
