@@ -64,7 +64,7 @@ public class FileIO  {
 
 
     static void storeTickets(Vector<Ticket> ticketQueue, String filename) throws IOException {
-        //System.out.print("Writing tickets to " + filename + "... ");
+        System.out.print("Writing tickets to " + filename + "... ");
 
         try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(filename))) {
 
@@ -86,7 +86,7 @@ public class FileIO  {
     }
 
     static void storeResolvedTickets(Vector<ResolvedTicket> ticketQueue, String filename) throws IOException {
-        //System.out.print("Writing tickets to " + filename + "... ");
+        System.out.print("Writing tickets to " + filename + "... ");
 
         try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(filename))) {
 

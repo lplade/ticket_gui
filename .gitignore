@@ -2,3 +2,5 @@
 *.iml
 out
 TicketManager.java
+open_tickets.txt
+Resolved_tickets_as_of_*
