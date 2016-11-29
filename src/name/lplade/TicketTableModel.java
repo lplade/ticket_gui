@@ -51,8 +51,14 @@ public class TicketTableModel extends AbstractTableModel {
         }
     }
 
+    public Ticket getTicketAtRow(int rowIndex){
+        return allTickets.get(rowIndex);
+    }
+
     @Override
     public String getColumnName(int col){
         return columnNames[col];
     }
+
+
 }

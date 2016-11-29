@@ -29,6 +29,8 @@ public class TicketGUI extends JFrame {
 
     private TicketTableModel tableModel;
 
+
+    //CONSTRUCTOR
     TicketGUI() throws IOException {
 
         super("Support Tickets");
@@ -62,6 +64,10 @@ public class TicketGUI extends JFrame {
 
         ticketsTable.setModel(tableModel);
 
+        //Configure JTable to only permit selection of single row
+        ticketsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+        //put numbers 1-5 in the priority combobox
         setupComboBox();
 
         addListeners();
@@ -85,45 +91,7 @@ public class TicketGUI extends JFrame {
 
     }
 
-/*    private void setupTableModel(LinkedList<Ticket> importedTickets) {
-        //https://gilbertadjin.wordpress.com/2009/05/05/populating-a-jtable-with-a-collection-list/
-
-        //Add column headings
-        String[] tableColumnNames = new String[5];
-        tableColumnNames[0] = "ID";
-        tableColumnNames[1] = "Priority";
-        tableColumnNames[2] = "Description";
-        tableColumnNames[3] = "Reported by";
-        tableColumnNames[4] = "Date reported";
-        tableModel.setColumnIdentifiers(tableColumnNames);
-
-        //Map imported LinkedList (if any) to TableModel
-        if (importedTickets == null) {
-            return;
-        }
-
-
-        for (Ticket ticket : importedTickets) {
-            addToTableModel(ticket);
-        }
-
-
-    }
-
-    private void addToTableModel(Ticket newTicket) {
-        Object[] tableRow = new Object[5];
-
-        //put each element of Table object into array
-        tableRow[0] = newTicket.getTicketID();
-        tableRow[1] = newTicket.getPriority();
-        tableRow[2] = newTicket.getDescription();
-        tableRow[3] = newTicket.getReporter();
-        tableRow[4] = newTicket.getDateReportedString();
-
-        //add the array to the model
-        tableModel.addRow(tableRow);
-    }*/
-
+    //methods split from constructor to make code more concise
 
     private void setupComboBox() {
         //put numbers 1-5 in the combo box
@@ -135,50 +103,43 @@ public class TicketGUI extends JFrame {
 
         //When we click the "Mark selected ticket as resolved" button...
         //http://stackoverflow.com/questions/23465295/remove-a-selected-row-from-jtable-on-button-click
-        /*closeSelectedTicketButton.addActionListener(new ActionListener() {
+        closeSelectedTicketButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int selectedRow = ticketsTable.getSelectedRow();
-                if (selectedRow != -1){
-                    //figure out the ID of the selected ticket
-                    int deleteID = (int) ticketsTable.getValueAt(selectedRow, 0);
-                    //remove the row from the model
-                    tableModel.removeRow(selectedRow);
-                    //loop through the LinkedList and delete the ticket with that ID
 
-                    for (Ticket ticket : importedTickets) {
-                        if (ticket.getTicketID() == deleteID) {
+                //look in newResolutionTextField
+                String resolution = newResolutionTextField.getText();
+                //validate this
+                if (! testStringNotNull(resolution, "resolution")) return;
 
-                            //interactive prompt for resolution info
-                            //TODO implement
-                            Date dateResolved = new Date(); //defaults to today
+                //use current date as resolved date
+                Date resolvedDate = new Date();
 
-                            //Instance a new resolved ticket
-                            //String desc, int p, String rep, Date dateInit, int id, String res, Date dateRes
-                            ResolvedTicket rt = new ResolvedTicket(
-                                    ticket.getDescription(),
-                                    ticket.getPriority(),
-                                    ticket.getReporter(),
-                                    ticket.getDateReported(),
-                                    ticket.getTicketID(),
-                                    resInput,
-                                    dateResolved
-                            );
+                //This SHOULD retrieve the ticket from the model corresponding to the selected row
+                Ticket ticketToClose = tableModel.getTicketAtRow(ticketsTable.getSelectedRow());
 
-                            //add the old ticket into the resolved list
-                            resolvedList.add(rt);
+                //make the new ticket to archive
+                ResolvedTicket resolvedTicket = new ResolvedTicket(
+                        ticketToClose.getDescription(),
+                        ticketToClose.getPriority(),
+                        ticketToClose.getReporter(),
+                        ticketToClose.getDateReported(),
+                        ticketToClose.getTicketID(),
+                        resolution,
+                        resolvedDate
+                );
 
-                            //then purge the ticket from the active list
-                            ticketQueue.remove(ticket);
-                            System.out.println(String.format("Ticket %d deleted", deleteID));
-                            break; //don't need loop any more.
-                        }
-                    }
-                }
-                //TODO remove ticket from tableModel
-                //TODO generate a ResolvedTicket
+                //add to vector
+                resolvedList.addElement(resolvedTicket);
+
+                //remove the old ticket from the first vector
+                ticketQueue.removeElement(ticketToClose);
+
+                //tell JTable to refresh
+                tableModel.fireTableDataChanged();
+
             }
-        });*/
+        });
 
         //When we click the "Add new ticket" button...
         addNewTicketButton.addActionListener(new ActionListener() {
@@ -222,7 +183,7 @@ public class TicketGUI extends JFrame {
             String errMsg = "Please enter the " + fieldName + " for this issue";
             JOptionPane.showMessageDialog(
                     TicketGUI.this,
-                    "Please enter a description of the issue"
+                    errMsg
             );
             return false;
         } else {
